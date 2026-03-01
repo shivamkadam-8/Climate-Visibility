@@ -1,34 +1,56 @@
 import os
+import subprocess
 
 
-class S3Sync:
+class RcloneSync:
+    """
+    Standalone utility class for syncing folders using rclone.exe
+    Windows-specific (absolute path supported)
+    """
 
-    def sync_folder_to_s3(self,folder,aws_buket_name):
+    def __init__(self, rclone_path="rclone"):
         """
-        Method Name :   sync_folder_to_s3
-        Description :   This method syncs local folder to s3 bucket
-
-        Output      :   NA
-        On Failure  :   Write an exception log and then raise an exception
-
-        Version     :   1.2
-        Revisions   :   moved setup to cloud
+        rclone_path:
+        - "rclone" if added to PATH
+        - OR absolute path to rclone.exe
         """
+        self.rclone_path = rclone_path
 
-        command = f"aws s3 sync {folder} s3://{aws_buket_name} "
-        os.system(command)
-
-    def sync_folder_from_s3(self,folder,aws_bucket_name):
+    def sync_folder_to_b2(self, folder: str, bucket_name: str, remote_name="backblaze"):
         """
-        Method Name :   sync_folder_from_s3
-        Description :   This method syncs s3 folder to local folder
-
-        Output      :   NA
-        On Failure  :   Write an exception log and then raise an exception
-
-        Version     :   1.2
-        Revisions   :   moved setup to cloud
+        Upload local folder to Backblaze B2
         """
+        cmd = [
+            self.rclone_path,
+            "sync",
+            folder,
+            f"{remote_name}:{bucket_name}"
+        ]
+        subprocess.run(cmd, check=True)
 
-        command = f"aws s3 sync s3://{aws_bucket_name} {folder} "
-        os.system(command)
+    def sync_folder_from_b2(self, folder: str, bucket_name: str, remote_name="backblaze"):
+        """
+        Download B2 bucket to local folder
+        """
+        os.makedirs(folder, exist_ok=True)
+        cmd = [
+            self.rclone_path,
+            "sync",
+            f"{remote_name}:{bucket_name}",
+            folder
+        ]
+        subprocess.run(cmd, check=True)
+
+
+if __name__ == "__main__":
+    syncer = RcloneSync()
+
+    syncer.sync_folder_to_b2(
+        "D:/climate/Climate-Visibility/data",
+        "climate-data-storage"
+    )
+
+    syncer.sync_folder_from_b2(
+        "D:/climate/Climate-Visibility/restore",
+        "climate-data-storage"
+    )

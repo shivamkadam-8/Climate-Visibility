@@ -1,0 +1,154 @@
+/* ================= ABOUT PAGE WRAPPER ================= */
+
+.about-page {
+    padding: 60px 20px;
+    background: linear-gradient(to right, #f8fbff, #eef3f9);
+    min-height: 100vh;
+}
+
+/* ================= HERO SECTION ================= */
+
+.about-hero {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.about-hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: #0d1b2a;
+}
+
+.about-hero h1 span {
+    font-size: 45px;
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #555;
+    margin-top: 15px;
+}
+
+/* ================= ABOUT GRID ================= */
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 70px;
+}
+
+.about-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    transition: all 0.3s ease;
+}
+
+.about-card h2 {
+    margin-bottom: 15px;
+    color: #0b5ed7;
+}
+
+.about-card p {
+    color: #444;
+    line-height: 1.6;
+}
+
+.about-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* ================= SECTION TITLES ================= */
+
+.section-title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #0d1b2a;
+}
+
+/* ================= STEPS SECTION ================= */
+
+.steps {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 70px;
+}
+
+.step {
+    background: white;
+    width: 200px;
+    height: 160px;
+    border-radius: 20px;
+    text-align: center;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.step span {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0b5ed7, #00c6ff);
+    color: white;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.step p {
+    font-size: 14px;
+    color: #555;
+}
+
+.step:hover {
+    transform: scale(1.05);
+}
+
+/* ================= MISSION SECTION ================= */
+
+.mission-box {
+    max-width: 800px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #0b5ed7, #00c6ff);
+    color: white;
+    padding: 40px;
+    border-radius: 25px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.7;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+
+    .about-hero h1 {
+        font-size: 30px;
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+
+    .step {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .mission-box {
+        padding: 25px;
+        font-size: 16px;
+    }
+}

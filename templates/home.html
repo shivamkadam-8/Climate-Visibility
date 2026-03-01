@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Climate Visibility{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style1.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="hero">
+    <h1>🌫 Climate Visibility Prediction</h1>
+    <p class="hero-text">
+        Smart AI-powered system that predicts atmospheric visibility 
+        using real-time climate data.
+    </p>
+    <a href="/predict" class="hero-btn">Try Prediction 🚀</a>
+</div>
+
+<div class="feature-section">
+    <h2 class="section-heading">Why Visibility Prediction?</h2>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <h3>✈ Aviation Safety</h3>
+            <p>Helps airports and pilots make safe landing decisions.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🚗 Road Transportation</h3>
+            <p>Improves highway traffic management during fog.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🌫 Weather Forecasting</h3>
+            <p>Enhances climate prediction accuracy.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🏙 Urban Planning</h3>
+            <p>Supports pollution monitoring and smart cities.</p>
+        </div>
+    </div>
+</div>
+
+<div class="tech-section">
+    <h2>Technology Stack</h2>
+    <div class="tech-badges">
+        <span>Python</span>
+        <span>Machine Learning</span>
+        <span>Flask</span>
+        <span>MongoDB</span>
+        <span>Docker</span>
+        <span>AWS</span>
+    </div>
+</div>
+
+{% endblock %}

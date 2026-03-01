@@ -1,135 +1,122 @@
 import sys
-from typing import Union
 import os
-import pandas as pd
 import numpy as np
+import pandas as pd
+
+from dataclasses import dataclass
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
 
-from collections import namedtuple
-from src.constant import *
+from src.constant import (
+    ARTIFACT_TIMESTAMP_DIR,
+    TARGET_COLUMN,
+    FEATURE_COLUMNS
+)
 from src.exception import VisibilityException
 from src.logger import logging
 from src.utils.main_utils import MainUtils
-from dataclasses import dataclass
+
+
+# ----------------------------------------
+# CONFIG
+# ----------------------------------------
 
 @dataclass
 class DataTransformationConfig:
-    data_transformation_dir=os.path.join(artifact_folder,'data_transformation')
-    transformed_train_file_path=os.path.join(data_transformation_dir, 'train.npy')
-    transformed_test_file_path=os.path.join(data_transformation_dir, 'test.npy') 
-    transformed_object_file_path=os.path.join( data_transformation_dir, 'preprocessing.pkl' )
+    transformed_dir: str = os.path.join(
+        ARTIFACT_TIMESTAMP_DIR, "data_transformation"
+    )
+    preprocessor_path: str = os.path.join(
+        transformed_dir, "preprocessor.pkl"
+    )
 
 
-
-
-
+# ----------------------------------------
+# TRANSFORMATION
+# ----------------------------------------
 
 class DataTransformation:
-    def __init__(self,
-                 valid_data_dir):
-       
-        self.valid_data_dir = valid_data_dir
 
-        self.data_transformation_config = DataTransformationConfig()
-
-
-        self.utils =  MainUtils()
-        
-    
-    def drop_schema_columns(self, dataframe:pd.DataFrame) -> pd.DataFrame:
-        """
-        Method Name :   drop_schema_columns
-        Description :   This method reads the schema.yml file and drops the column in th dataset based on the schema given. 
-        
-        Output      :   a pd.DataFrame dropping the schema columns
-        On Failure  :   Write an exception log and then raise an exception
-        
-        Version     :   1.2
-        Revisions   :   moved setup to cloud
-        """
+    def __init__(self, valid_data_dir: str = None, dataframe: pd.DataFrame = None):
         try:
-            _schema_config = self.utils.read_schema_config_file()
-            df = dataframe.drop(columns =  _schema_config["drop_columns"])
+            self.config = DataTransformationConfig()
+            self.utils = MainUtils()
 
-            return df
+            self.valid_data_dir = valid_data_dir
+            self.dataframe = dataframe
+
+            os.makedirs(self.config.transformed_dir, exist_ok=True)
+
         except Exception as e:
-            raise VisibilityException(e,sys)
+            raise VisibilityException(e, sys)
 
-    @staticmethod
-    def get_merged_batch_data(valid_data_dir:str) -> pd.DataFrame:
-        """
-        Method Name :   get_merged_batch_data
-        Description :   This method reads all the validated raw data from the valid_data_dir and returns a pandas DataFrame containing the merged data. 
-        
-        Output      :   a pandas DataFrame containing the merged data 
-        On Failure  :   Write an exception log and then raise an exception
-        
-        Version     :   1.2
-        Revisions   :   moved setup to cloud
-        """
+    # ----------------------------------------
+    # Load data
+    # ----------------------------------------
+
+    def _load_data(self) -> pd.DataFrame:
         try:
-            raw_files = os.listdir(valid_data_dir)
-            csv_data = []
-            for filename in raw_files:
-                data = pd.read_csv(os.path.join(valid_data_dir, filename))
-                csv_data.append(data)
+            if self.dataframe is not None:
+                return self.dataframe
 
-            merged_data = pd.concat(csv_data)
+            csv_files = [
+                os.path.join(self.valid_data_dir, f)
+                for f in os.listdir(self.valid_data_dir)
+                if f.endswith(".csv")
+            ]
 
-            return merged_data
+            if not csv_files:
+                raise Exception("No validated CSV files found")
+
+            df_list = [pd.read_csv(f) for f in csv_files]
+            return pd.concat(df_list, ignore_index=True)
+
         except Exception as e:
-            raise VisibilityException(e,sys)
-        
-    
+            raise VisibilityException(e, sys)
 
+    # ----------------------------------------
+    # Preprocessor
+    # ----------------------------------------
 
-             
-    def initiate_data_transformation(self) :
-        """
-            Method Name :   initiate_data_transformation
-            Description :   This method initiates the data transformation component for the pipeline 
-            
-            Output      :   data transformation artifact is created and returned 
-            On Failure  :   Write an exception log and then raise an exception
-            
-            Version     :   1.2
-            Revisions   :   moved setup to cloud
-        """
-
-        logging.info(
-            "Entered initiate_data_transformation method of Data_Transformation class"
+    def _get_preprocessor(self):
+        return Pipeline(
+            steps=[
+                ("scaler", StandardScaler())
+            ]
         )
 
+    # ----------------------------------------
+    # Main method
+    # ----------------------------------------
+
+    def initiate_data_transformation(self):
         try:
-            dataframe = self.get_merged_batch_data(valid_data_dir=self.valid_data_dir)
-            
-            dataframe = self.drop_schema_columns(dataframe=dataframe)
-            
+            logging.info("🔄 Starting data transformation")
 
-            X = dataframe.drop(columns= TARGET_COLUMN)
-            y = dataframe[TARGET_COLUMN]
-            
-            X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = 0.2 )
+            df = self._load_data()
 
+            X = df[FEATURE_COLUMNS]
+            y = df[TARGET_COLUMN]
 
+            X_train, X_test, y_train, y_test = train_test_split(
+                X, y, test_size=0.2, random_state=42
+            )
 
-            preprocessor = StandardScaler()
+            preprocessor = self._get_preprocessor()
+            X_train_scaled = preprocessor.fit_transform(X_train)
+            X_test_scaled = preprocessor.transform(X_test)
 
-            X_train_scaled =  preprocessor.fit_transform(X_train)
-            X_test_scaled  =  preprocessor.transform(X_test)
+            train_arr = np.c_[X_train_scaled, y_train.values]
+            test_arr = np.c_[X_test_scaled, y_test.values]
 
+            self.utils.save_object(
+                self.config.preprocessor_path, preprocessor
+            )
 
-            preprocessor_path = self.data_transformation_config.transformed_object_file_path
-            os.makedirs(os.path.dirname(preprocessor_path), exist_ok= True)
-            self.utils.save_object(preprocessor_path,
-                        obj= preprocessor)
+            logging.info("✅ Data transformation completed")
 
-            train_arr = np.c_[X_train_scaled, np.array(y_train) ]
-            test_arr = np.c_[ X_test_scaled, np.array(y_test) ]
-
-            return (train_arr, test_arr, preprocessor_path)
-        
+            return train_arr, test_arr, self.config.preprocessor_path
 
         except Exception as e:
-            raise VisibilityException(e, sys) from e
+            raise VisibilityException(e, sys)

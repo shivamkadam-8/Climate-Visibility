@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Climate Visibility{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block styles %}{% endblock %}
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 shadow">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="/">🌤 Climate Visibility</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/predict">Predict</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contact</a>
+                </li>
+
+                <!-- If User Logged In -->
+                {% if session.get("user") %}
+
+                    <li class="nav-item ms-lg-3">
+                        <span class="nav-link text-warning fw-bold">
+                            👋 Hi, {{ session.get("user") }}
+                        </span>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-outline-light ms-lg-2 px-3" href="/logout">
+                            Logout
+                        </a>
+                    </li>
+
+                <!-- If User NOT Logged In -->
+                {% else %}
+
+                    <li class="nav-item ms-lg-3">
+                        <a class="nav-link" href="/login">
+                            Login
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-primary text-white ms-lg-2 px-3" href="/register">
+                            Sign Up
+                        </a>
+                    </li>
+
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- ================= FLASH MESSAGES ================= -->
+<div class="container mt-3">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+<div class="main-content">
+    {% block content %}{% endblock %}
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+<footer class="custom-footer mt-5">
+    <div class="container-fluid px-5">
+        <div class="row text-center text-md-start align-items-center">
+
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5 class="fw-bold">🌤 Climate Visibility</h5>
+                <p>Turning Weather Data into Intelligent Predictions</p>
+            </div>
+
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h6 class="fw-bold">Quick Links</h6>
+                <a href="/" class="footer-link">Home</a><br>
+                <a href="/predict" class="footer-link">Predict</a><br>
+                <a href="/about" class="footer-link">About</a><br>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+
+            <div class="col-md-4 text-center text-md-end">
+                <h6 class="fw-bold">Connect With Us</h6>
+                <a href="#" class="social-icon"><i class="bi bi-globe"></i></a>
+                <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+            </div>
+
+        </div>
+
+        <hr class="footer-divider">
+
+        <div class="text-center copyright-text">
+            © 2026 Climate Visibility | All Rights Reserved
+        </div>
+    </div>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

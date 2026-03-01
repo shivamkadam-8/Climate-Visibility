@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Climate Visibility Prediction{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<style>
+     body {
+        background: url("{{ url_for('static', filename='image/clima.jpg') }}");
+        background-size: cover;
+        background-position: 70% center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+    
+    .form-card {
+        background: white;
+        padding: 45px;
+        border-radius: 25px;
+        width: 100%;
+        max-width: 520px;
+        margin: 100px auto 40px auto;
+        box-shadow: 0px 15px 35px rgba(0,0,0,0.25);
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 35px;
+        font-weight: 700;
+        color: #333;
+    }
+
+    .form-control { border-radius: 15px; height: 55px; }
+
+    .btn-predict {
+        width: 100%;
+        background: linear-gradient(135deg, #2c73df, #1e4bb8);
+        color: white;
+        border: none;
+        height: 55px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-predict:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 10px 25px rgba(44,115,223,0.4);
+    }
+</style>
+
+<div class="form-card">
+
+    <h1>🌤️ Climate Visibility Prediction</h1>
+
+    <form action="/predict" method="post">
+        <div class="form-floating mb-3">
+            <input type="number" step="any" class="form-control"
+                   id="drybulb" name="DRYBULBTEMPF" required>
+            <label for="drybulb">Dry Bulb Temperature (°F)</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="number" step="any" class="form-control"
+                   id="humidity" name="RelativeHumidity" required>
+            <label for="humidity">Relative Humidity (%)</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="number" step="any" class="form-control"
+                   id="windspeed" name="WindSpeed" required>
+            <label for="windspeed">Wind Speed</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="number" step="any" class="form-control"
+                   id="winddir" name="WindDirection" required>
+            <label for="winddir">Wind Direction</label>
+        </div>
+
+        <div class="form-floating mb-4">
+            <input type="number" step="any" class="form-control"
+                   id="pressure" name="SeaLevelPressure" required>
+            <label for="pressure">Sea Level Pressure</label>
+        </div>
+
+        <button type="submit" class="btn-predict">
+            🔍 Predict Climate Visibility
+        </button>
+    </form>
+
+    <!-- ✅ Show flashed messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- ✅ Show prediction result -->
+    {% if prediction %}
+      <div class="alert alert-success mt-3">
+        <strong>Prediction Result:</strong> {{ prediction }}
+      </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

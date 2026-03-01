@@ -1,25 +1,20 @@
 FROM python:3.8.5-slim-buster
 
+# Prevent Python buffering issues
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-COPY . /app
+# Copy only requirements first (better caching)
+COPY requirements.txt .
 
-ARG AWS_ACCESS_KEY_ID
+RUN pip install --no-cache-dir -r requirements.txt
 
-ARG AWS_SECRET_ACCESS_KEY
+# Copy rest of the project
+COPY . .
 
-ARG AWS_DEFAULT_REGION
+# Expose Flask port
+EXPOSE 5001
 
-ARG MONGO_DB_URL 
-
-ENV AWS_ACCESS_KEY_ID $AWS_ACCESS_KEY_ID
-
-ENV AWS_SECRET_ACCESS_KEY $AWS_SECRET_ACCESS_KEY
-
-ENV AWS_DEFAULT_REGION $AWS_DEFAULT_REGION
-
-ENV MONGO_DB_URL $MONGO_DB_URL
-
-RUN pip install -r requirements.txt
-
-CMD ["python3", "app.py"]
+# Run Flask app
+CMD ["python", "app.py"]

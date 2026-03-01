@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style3.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="contact-page">
+    <h1>Contact Us</h1>
+    <p>If you have any questions or suggestions, feel free to reach out.</p>
+
+    {% if success %}
+    <div class="alert-success" id="success-message">
+        ✅ Message sent successfully!
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="alert-error">
+        ❌ Something went wrong. Please try again.
+    </div>
+    {% endif %}
+
+    <form class="contact-form" method="POST" action="/contact" id="contact-form">
+
+        <label>Name</label>
+        <input type="text" name="name" placeholder="Your Name" required>
+
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Your Email" required>
+
+        <label>Message</label>
+        <textarea name="message" placeholder="Your Message" required></textarea>
+
+        <button type="submit" id="submit-btn">Send Message</button>
+    </form>
+</div>
+
+<script>
+    // Disable button on submit
+    const form = document.getElementById("contact-form");
+    const button = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", function () {
+        button.disabled = true;
+        button.innerText = "Sending...";
+    });
+
+    // Auto hide success message after 3 seconds
+    const successMessage = document.getElementById("success-message");
+    if (successMessage) {
+        setTimeout(() => {
+            successMessage.style.opacity = "0";
+        }, 3000);
+    }
+</script>
+{% endblock %}

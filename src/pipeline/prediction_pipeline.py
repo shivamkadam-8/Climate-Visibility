@@ -1,67 +1,53 @@
-import shutil
-import os,sys
+import sys
+import os
 import pandas as pd
+from dataclasses import dataclass
+from flask import Request  # ✅ Correct import for type hint
+
+from src.utils.main_utils import MainUtils
+from src.exception import VisibilityException
 from src.logger import logging
 
-import sys
-from src.cloud_storage.aws_syncer import S3Sync
-from flask import request
-from src.utils.main_utils import MainUtils
-from src.constant import *
-from src.exception import VisibilityException
 
-from dataclasses import dataclass
-        
-        
 @dataclass
 class PredictionPipelineConfig:
-    model_path = os.path.join("artifacts","prediction_model","model.pkl")
-
-
+    model_path: str = os.path.join(
+        "artifacts", "prediction_model", "model.pkl"
+    )
 
 
 class PredictionPipeline:
-    def __init__(self, request: request):
 
-        self.request = request  
-        self.s3_sync = S3Sync()     
+    def __init__(self, request: Request):  # ✅ Fixed type hint
+        self.request = request
         self.utils = MainUtils()
-        self.prediction_pipeline_config = PredictionPipelineConfig() 
+        self.config = PredictionPipelineConfig()
 
+        self.feature_order = [
+            "DRYBULBTEMPF",
+            "RelativeHumidity",
+            "WindSpeed",
+            "WindDirection",
+            "SeaLevelPressure"
+        ]
 
-    def download_model(self):
-        try:
-            self.s3_sync.sync_folder_from_s3(
-                folder= os.path.dirname(self.prediction_pipeline_config.model_path),
-                 aws_bucket_name= AWS_S3_BUCKET_NAME )
-            
-            return self.prediction_pipeline_config.model_path
-            
-        except Exception as e:
-            raise VisibilityException(e,sys)
-        
-        
     def run_pipeline(self):
         try:
-            data = dict(self.request.form.items())
-            values = data.values()
+            form_data = self.request.form.to_dict()
 
+            input_values = [
+                float(form_data[f]) for f in self.feature_order
+            ]
 
-            model_path = self.download_model()
+            input_df = pd.DataFrame(
+                [input_values],
+                columns=self.feature_order
+            )
 
-            model = self.utils.load_object(file_path=model_path)
-
-            prediction = model.predict([list(values)])
+            model = self.utils.load_object(self.config.model_path)
+            prediction = model.predict(input_df)[0]
 
             return prediction
 
-
         except Exception as e:
-            raise VisibilityException(e,sys)
-            
-        
-
- 
-        
-
-        
+            raise VisibilityException(e, sys)

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style2.css') }}">
+{% endblock %}
+{% block content %}
+<div class="about-page">
+<div class="about-hero">
+    <h1><span>🌍</span> About Climate Visibility</h1>
+    <p class="subtitle">
+        Turning Weather Data into Intelligent Predictions
+    </p>
+</div>
+
+
+<div class="about-grid">
+
+    <div class="about-card">
+        <h2>👩‍💻 Who We Are</h2>
+        <p>
+            We are a data science team focused on solving real-world problems
+            using machine learning, Python backend systems, and AI powered analytics.
+        </p>
+    </div>
+
+    <div class="about-card">
+        <h2>🌤️ The Project</h2>
+        <p>
+            Climate Visibility Prediction estimates how far objects can be seen
+            under specific weather conditions using trained ML models.
+        </p>
+    </div>
+
+</div>
+
+
+<h2 class="section-title">⚙️ How The System Works</h2>
+
+<div class="steps">
+
+    <div class="step">
+        <span>1</span>
+        <p>Collect historical climate data</p>
+    </div>
+
+    <div class="step">
+        <span>2</span>
+        <p>Train machine learning model</p>
+    </div>
+
+    <div class="step">
+        <span>3</span>
+        <p>User inputs weather values</p>
+    </div>
+
+    <div class="step">
+        <span>4</span>
+        <p>System predicts visibility instantly</p>
+    </div>
+
+</div>
+
+
+<h2 class="section-title">🎯 Our Mission</h2>
+
+<div class="mission-box">
+    <p>
+        To build intelligent real-time ML systems that improve safety,
+        aviation decisions, and environmental awareness using predictive technology.
+    </p>
+</div>
+
+
+{% endblock %}

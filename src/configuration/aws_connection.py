@@ -1,34 +1,60 @@
 import boto3
 import os
-from src.constant.env_variable import AWS_SECRET_ACCESS_KEY_ENV_KEY, AWS_ACCESS_KEY_ID_ENV_KEY,REGION_NAME
+import sys
+
+from src.exception import VisibilityException
+from src.logger import logging
 
 
+class B2Client:
+    """
+    Backblaze B2 client using S3-compatible API (boto3)
+    """
 
+    def __init__(self):
+        try:
+            self.endpoint_url = "https://s3.us-west-002.backblazeb2.com"
+            self.region_name = "us-west-002"
 
-class S3Client:
+            self.access_key_id = os.getenv("B2_ACCOUNT_ID")
+            self.secret_access_key = os.getenv("B2_ACCOUNT_KEY")
 
-    s3_client=None
-    s3_resource = None
-    def __init__(self, region_name=REGION_NAME):
+            if not self.access_key_id:
+                raise Exception("Environment variable B2_ACCOUNT_ID is not set")
 
-        if S3Client.s3_resource==None or S3Client.s3_client==None:
-            __access_key_id = os.getenv(AWS_ACCESS_KEY_ID_ENV_KEY, )
-            __secret_access_key = os.getenv(AWS_SECRET_ACCESS_KEY_ENV_KEY, )
-            if __access_key_id is None:
-                raise Exception(f"Environment variable: {AWS_ACCESS_KEY_ID_ENV_KEY} is not not set.")
-            if __secret_access_key is None:
-                raise Exception(f"Environment variable: {AWS_SECRET_ACCESS_KEY_ENV_KEY} is not set.")
-        
-            S3Client.s3_resource = boto3.resource('s3',
-                                            aws_access_key_id=__access_key_id,
-                                            aws_secret_access_key=__secret_access_key,
-                                            region_name=region_name
-                                            )
-            S3Client.s3_client = boto3.client('s3',
-                                        aws_access_key_id=__access_key_id,
-                                        aws_secret_access_key=__secret_access_key,
-                                        region_name=region_name
-                                        )
-        self.s3_resource = S3Client.s3_resource
-        self.s3_client = S3Client.s3_client
-        
+            if not self.secret_access_key:
+                raise Exception("Environment variable B2_ACCOUNT_KEY is not set")
+
+            self.s3_client = boto3.client(
+                "s3",
+                endpoint_url=self.endpoint_url,
+                aws_access_key_id=self.access_key_id,
+                aws_secret_access_key=self.secret_access_key,
+                region_name=self.region_name,
+            )
+
+            logging.info("Backblaze B2 client initialized successfully")
+
+        except Exception as e:
+            raise VisibilityException(e, sys)
+
+    # --------------------------------------------------
+    # Upload file
+    # --------------------------------------------------
+    def upload_file(self, bucket_name: str, local_path: str, b2_path: str):
+        try:
+            self.s3_client.upload_file(local_path, bucket_name, b2_path)
+            logging.info(f"Uploaded file to B2: {b2_path}")
+        except Exception as e:
+            raise VisibilityException(e, sys)
+
+    # --------------------------------------------------
+    # Download file
+    # --------------------------------------------------
+    def download_file(self, bucket_name: str, b2_path: str, local_path: str):
+        try:
+            os.makedirs(os.path.dirname(local_path), exist_ok=True)
+            self.s3_client.download_file(bucket_name, b2_path, local_path)
+            logging.info(f"Downloaded file from B2: {b2_path}")
+        except Exception as e:
+            raise VisibilityException(e, sys)
