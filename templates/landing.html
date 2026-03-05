@@ -3,30 +3,44 @@
 {% block title %}Welcome | Climate Visibility{% endblock %}
 
 {% block styles %}
+
 <style>
 
 /* ================= FULL PAGE BACKGROUND ================= */
 
 .landing-page {
-    min-height: 92vh;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    min-height: 100vh;
+
+    background: url("{{ url_for('static', filename='image/climatbg.jpg') }}");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
     position: relative;
     overflow: hidden;
 }
 
-/* Animated floating background effect */
+/* Floating glow effect */
+
 .landing-page::before {
     content: "";
     position: absolute;
+
     width: 600px;
     height: 600px;
+
     background: radial-gradient(circle, rgba(0,198,255,0.4), transparent);
+
     top: -150px;
     right: -150px;
+
     border-radius: 50%;
+
     animation: float 6s ease-in-out infinite alternate;
 }
 
@@ -35,18 +49,25 @@
     to { transform: translateY(40px); }
 }
 
-/* ================= GLASS CARD ================= */
+/* ================= CARD ================= */
 
 .landing-box {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
+
+    background: rgba(255,255,255,0.15); /* transparent card */
+
     padding: 60px;
     border-radius: 25px;
+
+    border: 1px solid rgba(255,255,255,0.3);
+
     box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+
     text-align: center;
     color: white;
+
     max-width: 700px;
     width: 90%;
+
     animation: fadeIn 1.2s ease-in-out;
 }
 
@@ -64,7 +85,7 @@
 
 .landing-box p {
     font-size: 18px;
-    opacity: 0.9;
+    opacity: 0.95;
 }
 
 /* ================= BUTTONS ================= */
@@ -83,7 +104,7 @@
 
 .btn-primary:hover {
     transform: scale(1.07);
-    box-shadow: 0 10px 25px rgba(0, 114, 255, 0.6);
+    box-shadow: 0 10px 25px rgba(0,114,255,0.6);
 }
 
 .btn-light {
@@ -103,7 +124,7 @@
 
 .btn-success:hover {
     transform: scale(1.07);
-    box-shadow: 0 10px 25px rgba(56, 239, 125, 0.6);
+    box-shadow: 0 10px 25px rgba(56,239,125,0.6);
 }
 
 .btn-outline-light:hover {
@@ -113,9 +134,11 @@
 }
 
 </style>
+
 {% endblock %}
 
 {% block content %}
+
 <div class="landing-page">
 
     <div class="landing-box">
@@ -153,4 +176,5 @@
     </div>
 
 </div>
+
 {% endblock %}

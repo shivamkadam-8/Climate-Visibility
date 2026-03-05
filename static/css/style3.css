@@ -1,161 +1,171 @@
 /* ================= PAGE BACKGROUND ================= */
 
+body {
+        background-image: url("../image/contact.jpg");
+        background-size: cover;
+        background-position: 70% center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+    
+/* ================= PAGE CONTAINER ================= */
+
 .contact-page {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #e3f2fd, #f8fbff);
+min-height: 100vh;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+display: flex;
+justify-content: center;
+align-items: center;
 
-    padding: 60px 20px;
-    text-align: center;
-}
+padding: 60px 20px;
 
-/* ================= HEADING ================= */
-
-.contact-page h1 {
-    font-size: 42px;
-    font-weight: 800;
-    color: #0b5ed7;
-    margin-bottom: 15px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.contact-page p {
-    font-size: 18px;
-    font-weight: 500;
-    margin-bottom: 35px;
-    color: #444;
-    max-width: 600px;
-    line-height: 1.6;
-}
-
-/* ================= ALERT MESSAGES ================= */
-
-.alert-success,
-.alert-error {
-    width: 100%;
-    max-width: 500px;
-    padding: 14px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    font-weight: 600;
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #a3d9b1;
-}
-
-.alert-error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f1aeb5;
-}
-
-/* Fade Animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 /* ================= FORM CARD ================= */
 
+.contact-card{
+background: white;
+padding: 45px;
+border-radius: 25px;
+width: 100%;
+max-width: 520px;
+
+box-shadow: 0px 15px 35px rgba(0,0,0,0.25);
+
+animation: fadeIn 0.8s ease-in-out;
+
+}
+
+/* ================= HEADING ================= */
+
+.contact-card h1 {
+font-size: 38px;
+font-weight: 800;
+color: #0b5ed7;
+margin-bottom: 10px;
+text-align: center;
+}
+
+.contact-card p {
+margin-bottom: 25px;
+color: #555;
+text-align: center;
+}
+
+/* ================= ALERTS ================= */
+
+.alert-success,
+.alert-error {
+margin-bottom: 15px;
+padding: 12px;
+border-radius: 10px;
+font-weight: 600;
+text-align: center;
+}
+
+.alert-success {
+background: #d4edda;
+color: #155724;
+}
+
+.alert-error {
+background: #f8d7da;
+color: #721c24;
+}
+
+/* ================= FORM ================= */
+
 .contact-form {
-    background: white;
-    width: 100%;
-    max-width: 500px;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    transition: 0.3s ease;
+display: flex;
+flex-direction: column;
+gap: 15px;
 }
-
-.contact-form:hover {
-    transform: translateY(-6px);
-}
-
-/* ================= INPUTS ================= */
 
 .contact-form label {
-    margin-bottom: 6px;
-    font-weight: 700;
-    color: #0d1b2a;
-    text-align: left;
+font-weight: 600;
+color: #333;
 }
 
 .contact-form input,
 .contact-form textarea {
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    outline: none;
-    font-size: 14px;
-    transition: all 0.3s ease;
+
+border-radius: 15px;
+border: 1px solid #ccc;
+
+padding: 12px;
+font-size: 16px;
+
+transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
 }
 
-.contact-form input:focus,
-.contact-form textarea:focus {
-    border-color: #0b5ed7;
-    box-shadow: 0 0 10px rgba(11, 94, 215, 0.25);
-}
-
+.contact-form input,
 .contact-form textarea {
-    resize: none;
-    height: 120px;
+
+border-color: #2c73df;
+box-shadow: 0 0 6px rgba(44,115,223,0.4);
+outline: none;
+
+}
+
+.contact-form textarea{
+min-height: 120px;
+resize: vertical;
 }
 
 /* ================= BUTTON ================= */
 
 .contact-form button {
-    padding: 12px;
-    border-radius: 30px;
-    border: none;
-    background: linear-gradient(135deg, #0b5ed7, #00c6ff);
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
+
+background: linear-gradient(135deg, #2c73df, #1e4bb8);
+
+color: white;
+border: none;
+
+height: 55px;
+border-radius: 30px;
+
+font-size: 18px;
+font-weight: 600;
+
+transition: all 0.3s ease;
+cursor: pointer;
+
 }
 
-.contact-form button:hover {
-    transform: scale(1.05);
-    background: linear-gradient(135deg, #0d1b2a, #0b5ed7);
+.contact-form button {
+
+transform: scale(1.05);
+box-shadow: 0px 10px 25px rgba(44,115,223,0.4);
+
 }
 
-/* Disabled State */
-.contact-form button:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
+/* ================= ANIMATION ================= */
+
+@keyframes fadeIn {
+
+from{
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+to{
+    opacity: 1;
+    transform: translateY(0);
+}
+
 }
 
 /* ================= RESPONSIVE ================= */
 
-@media (max-width: 600px) {
-    .contact-page h1 {
-        font-size: 30px;
-    }
+@media (max-width:600px){
 
-    .contact-page p {
-        font-size: 15px;
-    }
+.contact-card{
+padding:30px;
+}
 
-    .contact-form {
-        padding: 25px;
-    }
+.contact-card h1{
+font-size:28px;
+}
+
 }
