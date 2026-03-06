@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 
+{% block title %}Contact | Climate Visibility{% endblock %}
+
 {% block styles %}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style3.css') }}">
 {% endblock %}
 
 {% block content %}
+
 <div class="contact-page">
+
+```
+<div class="contact-card">
+
     <h1>Contact Us</h1>
     <p>If you have any questions or suggestions, feel free to reach out.</p>
 
@@ -33,25 +41,32 @@
         <textarea name="message" placeholder="Your Message" required></textarea>
 
         <button type="submit" id="submit-btn">Send Message</button>
+
     </form>
+
+</div>
+```
+
 </div>
 
 <script>
-    // Disable button on submit
-    const form = document.getElementById("contact-form");
-    const button = document.getElementById("submit-btn");
 
-    form.addEventListener("submit", function () {
-        button.disabled = true;
-        button.innerText = "Sending...";
-    });
+const form = document.getElementById("contact-form");
+const button = document.getElementById("submit-btn");
 
-    // Auto hide success message after 3 seconds
-    const successMessage = document.getElementById("success-message");
-    if (successMessage) {
-        setTimeout(() => {
-            successMessage.style.opacity = "0";
-        }, 3000);
-    }
+form.addEventListener("submit", function () {
+    button.disabled = true;
+    button.innerText = "Sending...";
+});
+
+const successMessage = document.getElementById("success-message");
+
+if (successMessage) {
+    setTimeout(() => {
+        successMessage.style.opacity = "0";
+    }, 3000);
+}
+
 </script>
+
 {% endblock %}

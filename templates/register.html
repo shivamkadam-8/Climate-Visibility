@@ -3,38 +3,118 @@
 {% block title %}Register | Climate Visibility{% endblock %}
 
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="card shadow-lg p-4" style="width: 400px; border-radius: 15px;">
 
-        <h3 class="text-center mb-4 fw-bold">Create Account</h3>
+<style>
+body {
+    background-image: url("{{ url_for('static', filename='image/register.jpg') }}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+    margin: 0;
+}
 
-        <form method="POST">
+/* Card styling */
+.form-card {
+    background: white;
+    padding: 45px;
+    border-radius: 25px;
+    width: 100%;
+    max-width: 420px;
+    margin: 100px auto 40px auto;
+    box-shadow: 0px 15px 35px rgba(0,0,0,0.25);
+    animation: fadeIn 0.8s ease-in-out;
+}
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Full Name</label>
-                <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
-            </div>
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Email</label>
-                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
-            </div>
+h3 {
+    text-align: center;
+    margin-bottom: 35px;
+    font-weight: 700;
+    color: #333;
+}
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Create password" required>
-            </div>
+/* Inputs */
+.form-control {
+    border-radius: 15px;
+    height: 55px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
 
-            <button type="submit" class="btn btn-primary w-100 fw-bold">
-                Sign Up
-            </button>
+.form-control:focus {
+    border-color: #2c73df;
+    box-shadow: 0 0 6px rgba(44,115,223,0.4);
+}
 
-            <div class="text-center mt-3">
-                Already have an account?
-                <a href="/login" class="fw-semibold">Login</a>
-            </div>
+/* Button */
+.btn-register {
+    width: 100%;
+    background: linear-gradient(135deg, #2c73df, #1e4bb8);
+    color: white;
+    border: none;
+    height: 55px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
 
-        </form>
-    </div>
+.btn-register:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 10px 25px rgba(44,115,223,0.4);
+}
+
+/* Login link */
+.text-center a {
+    color: #2c73df;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.text-center a:hover {
+    color: #1e4bb8;
+}
+</style>
+
+<div class="form-card">
+
+    <h3>Create Account</h3>
+
+    <form method="POST">
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Full Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Email</label>
+            <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Create password" required>
+        </div>
+
+        <button type="submit" class="btn-register">
+            Sign Up
+        </button>
+
+        <div class="text-center mt-3">
+            Already have an account?
+            <a href="/login" class="fw-semibold">Login</a>
+        </div>
+
+    </form>
+
 </div>
+
 {% endblock %}
