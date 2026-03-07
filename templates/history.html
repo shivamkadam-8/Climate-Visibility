@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Prediction History</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f4f4f4;
+text-align:center;
+}
+
+table{
+margin:auto;
+background:white;
+border-collapse:collapse;
+width:80%;
+}
+
+th,td{
+padding:12px;
+border:1px solid #ddd;
+}
+
+th{
+background:#3498db;
+color:white;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>Your Prediction History</h2>
+
+<table>
+
+<tr>
+<th>Date</th>
+<th>Temperature</th>
+<th>Humidity</th>
+<th>Wind Speed</th>
+<th>Pressure</th>
+<th>Prediction</th>
+</tr>
+
+{% for record in records %}
+
+<tr>
+<td>{{record.created_at}}</td>
+<td>{{record.temperature}}</td>
+<td>{{record.humidity}}</td>
+<td>{{record.wind_speed}}</td>
+<td>{{record.pressure}}</td>
+<td>{{record.prediction}}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>
