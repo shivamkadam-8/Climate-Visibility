@@ -2,6 +2,7 @@
 
 {% block title %}Climate Visibility Prediction{% endblock %}
 {% block styles %}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 {% endblock %}
 
@@ -61,59 +62,64 @@
 
 <div class="form-card">
 
-    <h1>🌤️ Climate Visibility Prediction</h1>
+```
+<h1>🌤️ Climate Visibility Prediction</h1>
 
-    <form action="/predict" method="post">
-        <div class="form-floating mb-3">
-            <input type="number" step="any" class="form-control"
-                   id="drybulb" name="DRYBULBTEMPF" required>
-            <label for="drybulb">Dry Bulb Temperature (°F)</label>
-        </div>
+<form action="/predict" method="post">
 
-        <div class="form-floating mb-3">
-            <input type="number" step="any" class="form-control"
-                   id="humidity" name="RelativeHumidity" required>
-            <label for="humidity">Relative Humidity (%)</label>
-        </div>
+    <div class="form-floating mb-3">
+        <input type="number" step="any" class="form-control"
+               id="drybulb" name="DRYBULBTEMPF" required>
+        <label for="drybulb">Dry Bulb Temperature (°F)</label>
+    </div>
 
-        <div class="form-floating mb-3">
-            <input type="number" step="any" class="form-control"
-                   id="windspeed" name="WindSpeed" required>
-            <label for="windspeed">Wind Speed</label>
-        </div>
+    <div class="form-floating mb-3">
+        <input type="number" step="any" class="form-control"
+               id="humidity" name="RelativeHumidity" required>
+        <label for="humidity">Relative Humidity (%)</label>
+    </div>
 
-        <div class="form-floating mb-3">
-            <input type="number" step="any" class="form-control"
-                   id="winddir" name="WindDirection" required>
-            <label for="winddir">Wind Direction</label>
-        </div>
+    <div class="form-floating mb-3">
+        <input type="number" step="any" class="form-control"
+               id="windspeed" name="WindSpeed" required>
+        <label for="windspeed">Wind Speed</label>
+    </div>
 
-        <div class="form-floating mb-4">
-            <input type="number" step="any" class="form-control"
-                   id="pressure" name="SeaLevelPressure" required>
-            <label for="pressure">Sea Level Pressure</label>
-        </div>
+    <div class="form-floating mb-3">
+        <input type="number" step="any" class="form-control"
+               id="winddir" name="WindDirection" required>
+        <label for="winddir">Wind Direction</label>
+    </div>
 
-        <button type="submit" class="btn-predict">
-            🔍 Predict Climate Visibility
-        </button>
-    </form>
+    <div class="form-floating mb-3">
+        <input type="number" step="any" class="form-control"
+               id="pressure" name="SeaLevelPressure" required>
+        <label for="pressure">Sea Level Pressure</label>
+    </div>
 
-    <!-- ✅ Show flashed messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
 
-    <!-- ✅ Show prediction result -->
-    {% if prediction %}
-      <div class="alert alert-success mt-3">
-        <strong>Prediction Result:</strong> {{ prediction }}
-      </div>
-    {% endif %}
+    <button type="submit" class="btn-predict">
+        🔍 Predict Climate Visibility
+    </button>
+
+</form>
+
+<!-- Show flashed messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!-- Show prediction result -->
+{% if prediction %}
+  <div class="alert alert-success mt-3">
+    <strong>Prediction Result:</strong> {{ prediction }}
+  </div>
+{% endif %}
+```
 
 </div>
 

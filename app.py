@@ -1,3 +1,4 @@
+from flask_mail import Mail, Message
 from pymongo import MongoClient
 from datetime import datetime
 import os
@@ -17,6 +18,18 @@ from src.logger import logging as lg
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+
+# ----------------------------------------
+# EMAIL CONFIG
+# ----------------------------------------
+
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = os.getenv("EMAIL_USER")
+app.config["MAIL_PASSWORD"] = os.getenv("EMAIL_PASS")
+
+mail = Mail(app)
 
 if not app.config["SECRET_KEY"]:
     raise ValueError("SECRET_KEY not found in .env file")
@@ -175,12 +188,14 @@ def predict():
             wind_direction = request.form.get("WindDirection")
             pressure = request.form.get("SeaLevelPressure")
 
+            # automatically use logged-in user email
+            email = session["email"]
+
             pipeline = PredictionPipeline(request)
             prediction = pipeline.run_pipeline()
 
-            # SAVE PREDICTION IN MONGODB
+            # SAVE PREDICTION
             predictions_collection.insert_one({
-
                 "user_email": session["email"],
                 "temperature": temperature,
                 "humidity": humidity,
@@ -189,8 +204,37 @@ def predict():
                 "pressure": pressure,
                 "prediction": prediction,
                 "created_at": datetime.utcnow()
-
             })
+
+            # SEND EMAIL
+            try:
+
+                msg = Message(
+                    subject="Climate Visibility Prediction Result",
+                    sender=os.getenv("EMAIL_USER"),
+                    recipients=[email]
+                )
+
+                msg.body = f"""
+Climate Visibility Prediction Report
+
+Temperature: {temperature}
+Humidity: {humidity}
+Wind Speed: {wind_speed}
+Wind Direction: {wind_direction}
+Pressure: {pressure}
+
+Prediction Result: {prediction}
+
+Thank you for using Climate Visibility System.
+"""
+
+                mail.send(msg)
+
+            except Exception as email_error:
+                print("Email sending failed:", email_error)
+
+            flash("Prediction completed!", "success")
 
             return render_template(
                 "result.html",

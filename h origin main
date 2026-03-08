@@ -1,0 +1,10 @@
+[33m383a1ea[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Added prediction history feature and improved UI
+[33me822d9d[m[33m ([m[1;31morigin/main[m[33m)[m updated landing page design
+[33m5f64b63[m Added artifacts folder
+[33m4d96888[m Remove 'artifacts' from .gitignore
+[33m53438a4[m Force Python 3.10 for Render
+[33mef4116f[m Add runtime file for Render
+[33m81aa01e[m Merge pull request #1 from saikumar0605/main
+[33m481c3df[m updated logo code
+[33m766e1e1[m Update README.md
+[33mb00acb9[m codebase added
