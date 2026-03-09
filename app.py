@@ -1,35 +1,27 @@
-from flask_mail import Mail, Message
-from pymongo import MongoClient
-from datetime import datetime
 import os
-from dotenv import load_dotenv
-load_dotenv()
+from datetime import datetime
 
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_bcrypt import Bcrypt
+from pymongo import MongoClient
 from itsdangerous import URLSafeTimedSerializer
+
 from src.pipeline.prediction_pipeline import PredictionPipeline
 from src.logger import logging as lg
 
+# ----------------------------------------
+# LOAD ENV VARIABLES
+# ----------------------------------------
+
+load_dotenv()
 
 # ----------------------------------------
-# App Config
+# APP CONFIG
 # ----------------------------------------
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-
-# ----------------------------------------
-# EMAIL CONFIG
-# ----------------------------------------
-
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = os.getenv("EMAIL_USER")
-app.config["MAIL_PASSWORD"] = os.getenv("EMAIL_PASS")
-
-mail = Mail(app)
 
 if not app.config["SECRET_KEY"]:
     raise ValueError("SECRET_KEY not found in .env file")
@@ -37,9 +29,8 @@ if not app.config["SECRET_KEY"]:
 bcrypt = Bcrypt(app)
 serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
-
 # ----------------------------------------
-# MongoDB Connection
+# MONGODB CONNECTION
 # ----------------------------------------
 
 MONGO_URI = os.getenv("MONGO_URI")
@@ -55,7 +46,6 @@ contact_collection = db["contacts"]
 predictions_collection = db["predictions"]
 
 lg.info("MongoDB connected successfully")
-
 
 # ----------------------------------------
 # PUBLIC ROUTES
@@ -91,7 +81,6 @@ def contact():
         return redirect(url_for("contact"))
 
     return render_template("contact.html")
-
 
 # ----------------------------------------
 # AUTH ROUTES
@@ -156,7 +145,6 @@ def logout():
     flash("Logged out successfully.", "info")
     return redirect(url_for("landing"))
 
-
 # ----------------------------------------
 # PROTECTED ROUTES
 # ----------------------------------------
@@ -188,15 +176,15 @@ def predict():
             wind_direction = request.form.get("WindDirection")
             pressure = request.form.get("SeaLevelPressure")
 
-            # automatically use logged-in user email
             email = session["email"]
 
             pipeline = PredictionPipeline(request)
             prediction = pipeline.run_pipeline()
 
             # SAVE PREDICTION
+
             predictions_collection.insert_one({
-                "user_email": session["email"],
+                "user_email": email,
                 "temperature": temperature,
                 "humidity": humidity,
                 "wind_speed": wind_speed,
@@ -205,34 +193,6 @@ def predict():
                 "prediction": prediction,
                 "created_at": datetime.utcnow()
             })
-
-            # SEND EMAIL
-            try:
-
-                msg = Message(
-                    subject="Climate Visibility Prediction Result",
-                    sender=os.getenv("EMAIL_USER"),
-                    recipients=[email]
-                )
-
-                msg.body = f"""
-Climate Visibility Prediction Report
-
-Temperature: {temperature}
-Humidity: {humidity}
-Wind Speed: {wind_speed}
-Wind Direction: {wind_direction}
-Pressure: {pressure}
-
-Prediction Result: {prediction}
-
-Thank you for using Climate Visibility System.
-"""
-
-                mail.send(msg)
-
-            except Exception as email_error:
-                print("Email sending failed:", email_error)
 
             flash("Prediction completed!", "success")
 
@@ -247,12 +207,12 @@ Thank you for using Climate Visibility System.
             )
 
         except Exception as e:
+
             lg.error(str(e))
             flash("Prediction failed!", "danger")
             return redirect(url_for("predict"))
 
     return render_template("predict.html")
-
 
 # ----------------------------------------
 # HISTORY ROUTE
@@ -270,7 +230,6 @@ def history():
     ).sort("created_at", -1)
 
     return render_template("history.html", records=records)
-
 
 # ----------------------------------------
 # FULL REPORT
@@ -295,7 +254,6 @@ def download_report():
         pressure=pressure,
         prediction=prediction
     )
-
 
 # ----------------------------------------
 # PASSWORD RESET
@@ -352,7 +310,6 @@ def reset_password(token):
         return redirect(url_for("login"))
 
     return render_template("reset_password.html")
-
 
 # ----------------------------------------
 # RUN SERVER
